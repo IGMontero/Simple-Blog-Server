@@ -10,7 +10,11 @@ const postSchema = new Schema({
     default: Date.now
   },
   image:String,
-  generalTopic : String
-})
+  generalTopic : String,
+  author : {
+    type: mongoose.Schema.Types.ObjectId,
+    ref : "User"
+  }
+});
 
 module.exports = mongoose.model('Post',postSchema);

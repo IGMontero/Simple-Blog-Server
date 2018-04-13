@@ -2,7 +2,8 @@ const express = require('express'),
       config = require('./config'),
       mongoose = require('mongoose'),
       bodyParser = require('body-parser'),
-      path = require('path');
+      path = require('path'),
+      session = require('express-session');
 
 const app = express();
 
@@ -18,12 +19,22 @@ app.use(bodyParser.urlencoded({extended : true}));
 //Interpret json posts
 app.use(bodyParser.json());
 
+//Session to track logins.
+app.use(session({
+  secret : 'sosecret',
+  resave : true,
+  saveUninitialized: false
+}))
+
+
 //Routes config
 const postsRoutes = require('./routes/postRoutes');
 app.use('/posts',postsRoutes);
+const userRoutes = require('./routes/userRoutes');
+app.use(userRoutes);
 
 
 
-app.listen(process.env.PORT, () =>{
-  console.log("Listening to port "+process.env.PORT);
+app.listen(process.env.port, () =>{
+  console.log("Listening to port "+process.env.port);
 })
