@@ -34,7 +34,8 @@ const userRoutes = require('./routes/userRoutes');
 app.use(userRoutes);
 
 
+var port = process.env.PORT || 8080;
 
-app.listen(process.env.port, () =>{
-  console.log("Listening to port "+process.env.port);
+app.listen(port, "0.0.0.0" , () =>{
+  console.log("Listening to port "+port);
 })
