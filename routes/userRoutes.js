@@ -1,7 +1,7 @@
 const express = require('express'),
       router = express.Router(),
       User = require('../models/User'),
-      bcrypt = require('bcrypt');
+      bcrypt = require('bcrypt-nodejs');
 
 //Controller
 const { createUser , logInUser , logOutUser } = require('../controllers/userController');

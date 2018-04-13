@@ -1,5 +1,5 @@
 const User = require('../models/User'),
-      bcrypt = require('bcrypt');
+      bcrypt = require('bcrypt-nodejs');
 
 
   exports.logOutUser = (req,res,next) => {

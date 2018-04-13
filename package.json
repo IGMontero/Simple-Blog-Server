@@ -10,7 +10,7 @@
   "author": "Ignacio Montero",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^1.0.3",
+    "bcrypt-nodejs": "0.0.3",
     "connect-mongo": "^2.0.1",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
