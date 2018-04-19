@@ -4,12 +4,13 @@ const express = require('express'),
       bcrypt = require('bcrypt-nodejs');
 
 //Controller
-const { createUser , logInUser , logOutUser } = require('../controllers/userController');
+const { createUser , logInUser , logOutUser , fetchUser } = require('../controllers/userController');
 
 
 router.post('/register',createUser);
 router.post('/login',logInUser);
 router.post('/logout',logOutUser);
+router.get('/users/:id' , fetchUser );
 
 router.get('/session', (req,res)=>{
   res.send(req.session)

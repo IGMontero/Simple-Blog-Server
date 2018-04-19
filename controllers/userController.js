@@ -1,8 +1,34 @@
 const User = require('../models/User'),
-      bcrypt = require('bcrypt-nodejs');
+      bcrypt = require('bcrypt-nodejs'),
+      _ = require('lodash');
 
 
-  exports.logOutUser = (req,res,next) => {
+  //Fetch user user data.
+  exports.fetchUser = (req,res) =>{
+    //Verify if data is missing.
+    const userId = req.params.id;
+    if(!userId){
+      return res.status(409).json({
+        message : 'required data missing'
+      });
+    }
+
+    User.findOne( {_id : userId} )
+    .populate('posts')
+    .exec( (err,user) => {
+      if(err){
+        return res.status(500).json({
+          message : 'error finding user'
+        });
+      }
+      //Send user data.
+      res.json(user);
+    });
+
+  }
+
+  //Log out user
+  exports.logOutUser = (req,res) => {
     if(req.session){
       //delete session object
       req.session.destroy( (err)=> {
@@ -17,8 +43,8 @@ const User = require('../models/User'),
       });
     }
   }
-
-  exports.logInUser = (req,res,next) => {
+  //Log in user
+  exports.logInUser = (req,res) => {
 
     const { email , password } = req.body;
 
@@ -54,55 +80,68 @@ const User = require('../models/User'),
         }else{
           //Set session
           req.session.userId = foundUser._id;
-          return res.json({ _id : foundUser._id });
+          return res.json({
+            _id : foundUser._id,
+            username : foundUser.username
+           });
         }
       });
 
     });
 
   }
+  //Create new user
+  exports.createUser = (req,res) => {
 
+  const { email, username, password , firstName , lastName } = req.body;
 
-  exports.createUser = (req,res,next) => {
-
-  const { email, username, password, passwordConf } = req.body;
 
   //Check if all data is recieved.
-  if(!email||!username||!password){
+  if(!email||!username||!password||!firstName||!lastName){
     return res.status(409).json({
       message: 'required data missing'
     });
-  }
-
+  }else{
   //Verify if email is already registered.
-  User.find( {email} )
-  .exec()
-  .then( (foundUser) => {
-    if( foundUser.length>=1 ){
+  User.findOne( {email} )
+  .exec( (err,foundUser) => {
+    if(err){
+      return res.status(500).json({
+        message : 'error finding user'
+      });
+    }
+    if( foundUser ){
       return res.status(409).json({
         message : 'email already registered'
       });
     }
     //Verify if username is already registered.
-      User.find( {username} )
-      .exec()
-      .then( (foundUser) =>{
-        if(foundUser.length>=1){
+      User.findOne( {username} )
+      .exec( (err,foundUser) =>{
+        if(err){
+          return res.status(500).json({
+            message : 'error finding user'
+          })
+        }
+        if(foundUser ){
           return res.status(409).json({
             message: 'username already registered'
           });
         }
-
         //Hash password
-        bcrypt.hash( password , 10 , (err,hash) =>{
+        bcrypt.hash( password , null , null , (err,hash) => {
           if(err){
-            return res.status(500).json({ error:err });
+            return res.status(500).json({
+            message : 'error hashing password'
+           });
           }
 
           const userData = {
             email,
             username,
-            password : hash
+            password : hash,
+            firstName,
+            lastName
           }
 
           User.create( userData , (err,user) => {
@@ -113,11 +152,9 @@ const User = require('../models/User'),
             return res.status(201).json({
               message : 'user created'
             });
-
-
           });
         });
       });
   });
-
+  }
 }
