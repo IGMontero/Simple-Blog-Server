@@ -3,6 +3,20 @@ const User = require('../models/User'),
       _ = require('lodash');
 
 
+  //Update user data.
+  exports.updateUser = (req,res) =>{
+
+    User.findByIdAndUpdate(req.params.id , req.body , (err,user) =>{
+      if(err){
+        return res.status(500).json({
+          message:'error updating user'
+        });
+      }
+      console.log("User updated with id: "+req.params.id);
+      res.json(user);
+    });
+
+  }
   //Fetch user user data.
   exports.fetchUser = (req,res) =>{
     //Verify if data is missing.

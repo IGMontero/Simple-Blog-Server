@@ -17,7 +17,7 @@ mongoose.connect(`mongodb://${config.db.user}:${config.db.password}${config.db.u
 //App configuration
 app.use(bodyParser.urlencoded({extended : true}));
 //Interpret json posts
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '30mb'}));
 
 //Session to track logins.
 app.use(session({

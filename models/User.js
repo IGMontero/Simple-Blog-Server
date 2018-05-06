@@ -30,9 +30,6 @@ const userSchema = new Schema({
   profileImage: {
     type:String
   },
-  interestTopics : [{
-    type:String
-  }],
   password : {
     type: String,
     required: true
